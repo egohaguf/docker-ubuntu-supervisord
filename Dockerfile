@@ -22,6 +22,13 @@ ADD sshd.conf /etc/supervisor/conf.d/sshd.conf
 ADD dbus.conf /etc/supervisor/conf.d/dbus.conf
 ADD cloudflared.conf /etc/supervisor/conf.d/cloudflared.conf
 
-RUN mkdir -p /var/run/sshd /var/run/dbus
+RUN mkdir -p /var/run/sshd /var/run/dbus \
+    && rm -f /etc/ssh/ssh_host_*key*
 
-CMD ["/usr/bin/supervisord", "-nc", "/etc/supervisor/supervisord.conf"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD supervisorctl status | grep -v RUNNING | grep -q . && exit 1 || exit 0
+
+CMD ["/entrypoint.sh"]
