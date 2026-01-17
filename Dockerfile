@@ -7,13 +7,14 @@ RUN sed -i -e 's%archive.ubuntu.com%ftp.udx.icscoe.jp/Linux%' -e 's%security.ubu
 
 RUN apt-get update \
         && apt-get -y upgrade \
-        && apt-get -y install supervisor python3-venv python3-dev tzdata git vim-nox openssh-server tmux \
+        && apt-get -y install supervisor python3-venv python3-dev tzdata git vim-nox openssh-server tmux build-essential dbus \
         && echo "${TZ}" > /etc/timezone \
         && dpkg-reconfigure -f noninteractive tzdata
 
 ADD supervisord.conf /etc/supervisor/supervisord.conf
 ADD sshd.conf /etc/supervisor/conf.d/sshd.conf
+ADD dbus.conf /etc/supervisor/conf.d/dbus.conf
 
-RUN mkdir -p /var/run/sshd
+RUN mkdir -p /var/run/sshd /var/run/dbus
 
 CMD ["/usr/bin/supervisord", "-nc", "/etc/supervisor/supervisord.conf"]
