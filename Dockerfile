@@ -10,5 +10,8 @@ RUN apt-get update \
         && dpkg-reconfigure -f noninteractive tzdata
 
 ADD supervisord.conf /etc/supervisor/supervisord.conf
+ADD sshd.conf /etc/supervisor/conf.d/sshd.conf
+
+RUN mkdir -p /var/run/sshd
 
 CMD ["/usr/bin/supervisord", "-nc", "/etc/supervisor/supervisord.conf"]
