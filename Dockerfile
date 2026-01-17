@@ -1,7 +1,9 @@
-FROM ubuntu:latest
+FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ Asia/Tokyo
+
+RUN sed -i -e 's%archive.ubuntu.com%ftp.udx.icscoe.jp/Linux%' -e 's%security.ubuntu.com%ftp.udx.icscoe.jp/Linux%' /etc/apt/sources.list.d/ubuntu.sources
 
 RUN apt-get update \
         && apt-get -y upgrade \
